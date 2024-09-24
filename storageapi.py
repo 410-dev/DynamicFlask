@@ -19,8 +19,10 @@ def getInstanceID() -> str:
         newFileName = path.filename.replace("\\", "/")
         if f'{websiteRoot}/' in newFileName:
             instanceName = newFileName.split(f'{websiteRoot}/')[1].split('/')[0]
+            if instanceName == newFileName.split(f'{websiteRoot}/')[1]:
+                instanceName = "root"
             return instanceName
-    print(f"  Not found in paths. Using auto fallback: {inspect.stack()[1].filename}")
+    print(f"  [WARNING] StorageAPI: Not found in paths. Using auto fallback: {inspect.stack()[1].filename}")
 
     inspectPath = inspect.stack()[1].filename.replace("\\", "/")
     instanceName = inspectPath.split('/')[-1].split('.')[0]
@@ -43,7 +45,7 @@ def writeStr(path: str, data: str) -> bool:
         return True
 
     except Exception as e:
-        print(f"Failed to write to {path}: {e}")
+        print(f"  [WARNING] StorageAPI: Failed to write to {path}: {e}")
         return False
 
 def readStr(path: str) -> str:
@@ -54,7 +56,7 @@ def readStr(path: str) -> str:
             return file.read()
 
     except Exception as e:
-        print(f"Failed to read from {path}: {e}")
+        print(f"  [WARNING] StorageAPI: Failed to read from {path}: {e}")
         return ""
 
 def appendStr(path: str, data: str) -> bool:
@@ -69,7 +71,7 @@ def appendStr(path: str, data: str) -> bool:
         return True
 
     except Exception as e:
-        print(f"Failed to append to {path}: {e}")
+        print(f"  [WARNING] StorageAPI: Failed to append to {path}: {e}")
         return False
 
 def writeBytes(path: str, data: bytes) -> bool:
@@ -84,7 +86,7 @@ def writeBytes(path: str, data: bytes) -> bool:
         return True
 
     except Exception as e:
-        print(f"Failed to write to {path}: {e}")
+        print(f"  [WARNING] StorageAPI: Failed to write to {path}: {e}")
         return False
 
 def readBytes(path: str) -> bytes:
@@ -95,7 +97,7 @@ def readBytes(path: str) -> bytes:
             return file.read()
 
     except Exception as e:
-        print(f"Failed to read from {path}: {e}")
+        print(f"  [WARNING] StorageAPI: Failed to read from {path}: {e}")
         return b""
 
 def remove(path: str) -> bool:
@@ -108,7 +110,7 @@ def remove(path: str) -> bool:
             os.remove(f"{storageLocation}/{instanceId}/{path}")
         return True
     except Exception as e:
-        print(f"Failed to remove {path}: {e}")
+        print(f"  [WARNING] StorageAPI: Failed to remove {path}: {e}")
         return False
 
 def cacheStr(key: str, data: str) -> bool:
@@ -123,7 +125,7 @@ def cacheStr(key: str, data: str) -> bool:
         return True
 
     except Exception as e:
-        print(f"Failed to cache {key}: {e}")
+        print(f"  [WARNING] StorageAPI: Failed to cache {key}: {e}")
         return False
 
 def cacheBytes(key: str, data: bytes) -> bool:
@@ -138,7 +140,7 @@ def cacheBytes(key: str, data: bytes) -> bool:
         return True
 
     except Exception as e:
-        print(f"Failed to cache {key}: {e}")
+        print(f"  [WARNING] StorageAPI: Failed to cache {key}: {e}")
         return False
 
 def readCacheStr(key: str) -> str:
@@ -149,7 +151,7 @@ def readCacheStr(key: str) -> str:
             return file.read()
 
     except Exception as e:
-        print(f"Failed to read from cache {key}: {e}")
+        print(f"  [WARNING] StorageAPI: Failed to read from cache {key}: {e}")
         return ""
 
 def readCacheBytes(key: str) -> bytes:
@@ -160,7 +162,7 @@ def readCacheBytes(key: str) -> bytes:
             return file.read()
 
     except Exception as e:
-        print(f"Failed to read from cache {key}: {e}")
+        print(f"  [WARNING] StorageAPI: Failed to read from cache {key}: {e}")
         return b""
 
 def removeCache(key: str) -> bool:
@@ -173,5 +175,5 @@ def removeCache(key: str) -> bool:
             os.remove(f"{storageLocation}/{instanceId}/{key}")
         return True
     except Exception as e:
-        print(f"Failed to remove cache {key}: {e}")
+        print(f"  [WARNING] StorageAPI: Failed to remove cache {key}: {e}")
         return False
