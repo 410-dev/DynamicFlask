@@ -51,9 +51,9 @@ def register_python_route(uri_path, full_path):
             if hasattr(module, 'flaskMain'):
                 return module.flaskMain(request, session)
             else:
-                return jsonify({"error": f"No flaskMain function in {full_path}"}), 500
+                return jsonify({"error": 500, "message": f"No flaskMain function in {full_path}"}), 500
         except Exception as e:
-            return jsonify({"error": str(e)}), 500
+            return jsonify({"error": 500, "message": str(e)}), 500
 
     app.add_url_rule(uri_path, view_func=dynamic_route, methods=['GET', 'POST'], endpoint=unique_func_name)
     app.add_url_rule(uri_path + '/', view_func=dynamic_route, methods=['GET', 'POST'], endpoint=f"{unique_func_name}_slash")
@@ -78,7 +78,7 @@ def register_static_route(uri_path, full_path, root):
         try:
             return send_from_directory(root, os.path.basename(full_path))
         except Exception as e:
-            return jsonify({"error": str(e)}), 500
+            return jsonify({"error": 500, "message": str(e)}), 500
 
     allowedIndex: list = getConfig("indexAllowed")
     for index in allowedIndex:
