@@ -15,14 +15,14 @@ def flaskMain(request, session):
         name = request.args.get('name')
 
         if storage.has(f"/devices/{name}") is False:
-            return jsonify({"error": "Device not found"}), 404
+            return jsonify({"error": 1, "message": "Device not found"}), 404
         deviceData: dict = json.loads(storage.readStr(f"/devices/{name}"))
 
         authstr = request.args.get('authstr')
         authstr = hashlib.sha256(authstr.encode()).hexdigest()
 
         if authstr != deviceData.get("authstr"):
-            return jsonify({"error": "Invalid authentication string"}), 401
+            return jsonify({"error": 2, "message": "Invalid authentication string"}), 401
 
         mac = deviceData.get("mac")
         ip = deviceData.get("ip")
@@ -43,7 +43,7 @@ def flaskMain(request, session):
         sock.sendto(magic, (ip, 9))
         sock.close()
 
-        return jsonify({"message": "Magic packet sent", "ip": ip, "name": name})
+        return jsonify({"message": "Power signal sent. PC should now start up.", "ip": ip, "name": name})
 
     else:
-        return jsonify({"error": "Invalid request method"}), 405
+        return jsonify({"error": 4, "message": "Invalid request method"}), 405

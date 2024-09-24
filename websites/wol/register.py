@@ -18,10 +18,10 @@ def flaskMain(request, session):
         authstr = hashlib.sha256(authstr.encode()).hexdigest()
 
         if storage.has(f"/devices/{name}") is True:
-            return jsonify({"error": "Device already exists"}), 409
+            return jsonify({"error": 5, "message": "Device already exists"}), 409
 
         if "-" not in mac:
-            return jsonify({"error": "Invalid MAC address! Use '-' to separate each octet"}), 400
+            return jsonify({"error": 6, "message": "Invalid MAC address! Use '-' to separate each octet"}), 400
 
         deviceData = {
             "mac": mac,
@@ -39,4 +39,4 @@ def flaskMain(request, session):
         return jsonify({"message": "Machine registered", "name": name})
 
     else:
-        return jsonify({"error": "Invalid request method"}), 405
+        return jsonify({"error": 4, "message": "Invalid request method"}), 405
