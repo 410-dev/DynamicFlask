@@ -5,7 +5,7 @@ import hashlib
 
 # Define the entry point that handles the HTTP request
 # Request is made as such:
-# http://0.0.0.0/wol/poweron?name=Test&authstr=abcdef
+# http://0.0.0.0/wol/unregister?name=Test&authstr=abcdef
 def flaskMain(request, session):
     # Handle GET and POST methods
     if request.method == 'GET':
