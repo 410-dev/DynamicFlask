@@ -3,3 +3,4 @@
 *.pyc
 storage/*
 cache/*
+shared/*

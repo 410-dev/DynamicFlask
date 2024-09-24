@@ -7,5 +7,6 @@
     "port": 8080,
     "httpSessionSecretKey": "supersecretkey",
     "skipExtension": [".html"],
-    "indexAllowed": [".py", ".html"]
+    "indexAllowed": [".py", ".html"],
+    "sharedStorage": "shared"
 }

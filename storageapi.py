@@ -177,3 +177,67 @@ def removeCache(key: str) -> bool:
     except Exception as e:
         print(f"  [WARNING] StorageAPI: Failed to remove cache {key}: {e}")
         return False
+
+def writeSharedStr(path: str, data: str) -> bool:
+    storageLocation: str = getConfig("sharedStorage")
+    try:
+        parentDir = os.path.dirname(f"{storageLocation}/{path}")
+        if not os.path.exists(parentDir):
+            os.makedirs(parentDir, exist_ok=True)
+        with open(f"{storageLocation}/{path}", "w") as file:
+            file.write(data)
+        return True
+
+    except Exception as e:
+        print(f"  [WARNING] StorageAPI: Failed to write to {path}: {e}")
+        return False
+
+def readSharedStr(path: str) -> str:
+    storageLocation: str = getConfig("sharedStorage")
+    try:
+        with open(f"{storageLocation}/{path}", "r") as file:
+            return file.read()
+
+    except Exception as e:
+        print(f"  [WARNING] StorageAPI: Failed to read from {path}: {e}")
+        return ""
+
+def writeSharedBytes(path: str, data: bytes) -> bool:
+    storageLocation: str = getConfig("sharedStorage")
+    try:
+        parentDir = os.path.dirname(f"{storageLocation}/{path}")
+        if not os.path.exists(parentDir):
+            os.makedirs(parentDir, exist_ok=True)
+        with open(f"{storageLocation}/{path}", "wb") as file:
+            file.write(data)
+        return True
+
+    except Exception as e:
+        print(f"  [WARNING] StorageAPI: Failed to write to {path}: {e}")
+        return False
+
+def readSharedBytes(path: str) -> bytes:
+    storageLocation: str = getConfig("sharedStorage")
+    try:
+        with open(f"{storageLocation}/{path}", "rb") as file:
+            return file.read()
+
+    except Exception as e:
+        print(f"  [WARNING] StorageAPI: Failed to read from {path}: {e}")
+        return b""
+
+def removeShared(path: str) -> bool:
+    storageLocation: str = getConfig("sharedStorage")
+    try:
+        if os.path.isdir(f"{storageLocation}/{path}"):
+            shutil.rmtree(f"{storageLocation}/{path}")
+        else:
+            os.remove(f"{storageLocation}/{path}")
+        return True
+    except Exception as e:
+        print(f"  [WARNING] StorageAPI: Failed to remove {path}: {e}")
+        return False
+
+def isInSharedStorage(path: str) -> bool:
+    storageLocation: str = getConfig("sharedStorage")
+    return os.path.exists(f"{storageLocation}/{path}")
