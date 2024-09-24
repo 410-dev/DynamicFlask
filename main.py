@@ -59,8 +59,11 @@ def register_python_route(uri_path, full_path):
     app.add_url_rule(uri_path + '/', view_func=dynamic_route, methods=['GET', 'POST'], endpoint=f"{unique_func_name}_slash")
 
     if uri_path.endswith("/index"):
-        print(f"    Registering index route: {uri_path[:-6]}")
-        app.add_url_rule(uri_path[:-6], view_func=dynamic_route, methods=['GET', 'POST'], endpoint=f"{unique_func_name}_index")
+        new_uri_path = uri_path[:-6]
+        print(f"    Registering index route: {new_uri_path}")
+        if len(new_uri_path) == 0:
+            new_uri_path = "/"
+        app.add_url_rule(new_uri_path, view_func=dynamic_route, methods=['GET', 'POST'], endpoint=f"{unique_func_name}_index")
 
     extension = Path(full_path).suffix
     if extension in getConfig("skipExtension"):
@@ -80,11 +83,13 @@ def register_static_route(uri_path, full_path, root):
     allowedIndex: list = getConfig("indexAllowed")
     for index in allowedIndex:
         currentFullPath = full_path.replace("\\", "/")
-        print(f"    %%% Checking for index route: {uri_path}/index{index} -> {currentFullPath}")
         if currentFullPath.endswith(f"/index{index}"):
-            print(f"    Registering index route: {uri_path[:-(len(index) + 6)]}")
-            app.add_url_rule(uri_path[:-(len(index) + 6)], view_func=static_file, methods=['GET', 'POST'], endpoint=f"{unique_endpoint}_index")
-            app.add_url_rule(uri_path[:-(len(index) + 6)] + '/', view_func=static_file, methods=['GET', 'POST'], endpoint=f"{unique_endpoint}_index_slash")
+            new_uri_path = uri_path[:-(len(index) + 6)]
+            if len(new_uri_path) == 0:
+                new_uri_path = "/"
+            print(f"    Registering index route: {new_uri_path}")
+            app.add_url_rule(new_uri_path, view_func=static_file, methods=['GET', 'POST'], endpoint=f"{unique_endpoint}_index")
+            app.add_url_rule(new_uri_path + '/', view_func=static_file, methods=['GET', 'POST'], endpoint=f"{unique_endpoint}_index_slash")
 
     extension = Path(full_path).suffix
     if extension in getConfig("skipExtension"):
