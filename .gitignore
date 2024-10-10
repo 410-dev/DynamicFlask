@@ -4,3 +4,4 @@
 storage/*
 cache/*
 shared/*
+/.venv
