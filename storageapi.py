@@ -28,6 +28,16 @@ def getInstanceID() -> str:
     instanceName = inspectPath.split('/')[-1].split('.')[0]
     return instanceName
 
+def getRawPathToStorage(path: str, createDirectory: bool = True) -> str:
+    instanceId: str = getInstanceID()
+    storageLocation: str = getConfig("storageDir")
+    fullpath = f"{storageLocation}/{instanceId}/{path}"
+    if createDirectory:
+        parentDir = os.path.dirname(fullpath)
+        if not os.path.exists(parentDir):
+            os.makedirs(parentDir, exist_ok=True)
+    return fullpath
+
 def has(path: str) -> bool:
     instanceId: str = getInstanceID()
     storageLocation: str = getConfig("storageDir")
