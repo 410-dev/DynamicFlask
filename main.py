@@ -14,7 +14,7 @@ def getConfig(key: str) -> any:
 app = Flask(__name__)
 app.secret_key = getConfig("httpSessionSecretKey")
 
-fileBlacklisted = ["__init__.py", ".DS_Store", "config.json", "*.pyc", "main.py", "root.json"]
+fileBlacklisted = ["__init__.py", ".DS_Store", "config.json", "*.pyc", "main.py", "root.json", "instance.json"]
 
 def find_and_register_routes(base_dir):
     for root, dirs, files in os.walk(base_dir):
