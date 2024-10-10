@@ -8,5 +8,11 @@
     "httpSessionSecretKey": "supersecretkey",
     "skipExtension": [".html"],
     "indexAllowed": [".py", ".html"],
-    "sharedStorage": "shared"
+    "sharedStorage": "shared",
+    "managerAuthorities": {
+        "admin": {
+            "password": "abcd",
+            "privileges": ["ALL", "manager.update", "manager.install", "manager.delete", "manager.list"]
+        }
+    }
 }
