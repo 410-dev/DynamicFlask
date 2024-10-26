@@ -4,6 +4,7 @@ import json
 import hashlib
 import socket
 import struct
+from wakeonlan import send_magic_packet
 
 # Define the entry point that handles the HTTP request
 # Request is made as such:
@@ -26,22 +27,8 @@ def flaskMain(request, session):
 
         mac = deviceData.get("mac")
         ip = deviceData.get("ip")
-        macsplit = mac.split("-")
 
-        addrs = struct.pack("BBBBBB", int(macsplit[0], 16),
-            int(macsplit[1], 16),
-            int(macsplit[2], 16),
-            int(macsplit[3], 16),
-            int(macsplit[4], 16),
-            int(macsplit[5], 16)
-        )
-
-        magic = b"\xFF" * 6 + addrs * 16
-
-        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
-        sock.sendto(magic, (ip, 9))
-        sock.close()
+        send_magic_packet(mac)
 
         return jsonify({"message": "Power signal sent. PC should now start up.", "ip": ip, "name": name})
 
