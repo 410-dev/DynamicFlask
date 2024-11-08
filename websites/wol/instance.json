@@ -1,0 +1,15 @@
+{
+    "name": "wol-frontapi",
+    "preferredPath": "/wol",
+    "description": "Wake On LAN Frontend API on DynamicFlask",
+    "version": "1.0",
+    "apis": [
+        "storageapi:1.0"
+    ],
+    "policy": {
+        "DisallowSubdirectoryTraversal": [
+            "instance",
+            "all"
+        ]
+    }
+}

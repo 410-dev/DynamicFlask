@@ -4,7 +4,7 @@
     "storageDir": "storage",
     "host": "0.0.0.0",
     "debug": true,
-    "port": 8080,
+    "port": 9000,
     "httpSessionSecretKey": "supersecretkey",
     "skipExtension": [".html"],
     "indexAllowed": [".py", ".html"],

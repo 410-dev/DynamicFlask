@@ -188,6 +188,35 @@ def removeCache(key: str) -> bool:
         print(f"  [WARNING] StorageAPI: Failed to remove cache {key}: {e}")
         return False
 
+def mkdir(path: str) -> bool:
+    instanceId: str = getInstanceID()
+    storageLocation: str = getConfig("storageDir")
+    try:
+        os.makedirs(f"{storageLocation}/{instanceId}/{path}", exist_ok=True)
+        return True
+    except Exception as e:
+        print(f"  [WARNING] StorageAPI: Failed to create directory {path}: {e}")
+        return False
+
+def rmdir(path: str) -> bool:
+    instanceId: str = getInstanceID()
+    storageLocation: str = getConfig("storageDir")
+    try:
+        shutil.rmtree(f"{storageLocation}/{instanceId}/{path}")
+        return True
+    except Exception as e:
+        print(f"  [WARNING] StorageAPI: Failed to remove directory {path}: {e}")
+        return False
+
+def listdir(path: str) -> list:
+    instanceId: str = getInstanceID()
+    storageLocation: str = getConfig("storageDir")
+    try:
+        return os.listdir(f"{storageLocation}/{instanceId}/{path}")
+    except Exception as e:
+        print(f"  [WARNING] StorageAPI: Failed to list directory {path}: {e}")
+        return []
+
 def writeSharedStr(path: str, data: str) -> bool:
     storageLocation: str = getConfig("sharedStorage")
     try:

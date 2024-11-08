@@ -1,0 +1,13 @@
+{
+    "name": "examplesite",
+    "preferredPath": "/examplesite",
+    "description": "DynamicFlask Instance Example",
+    "version": "1.0",
+    "apis": [],
+    "policy": {
+        "DisallowSubdirectoryTraversal": [
+            "instance",
+            "all"
+        ]
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "name": "manager",
+    "preferredPath": "/manager",
+    "description": "DynamicFlask Instance Manager Front API",
+    "version": "1.0",
+    "apis": [
+        "instancemgmtapi:1.0",
+        "storageapi:1.0"
+    ],
+    "policy": {
+        "DisallowSubdirectoryTraversal": [
+            "instance",
+            "all"
+        ]
+    }
+}

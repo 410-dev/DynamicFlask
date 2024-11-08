@@ -19,12 +19,13 @@ def sanitize_filename(name):
 
 def download_youtube_video(yt_url, output_path, format_type='mp4'):
     """
-    Download the YouTube video or audio at the highest available quality.
+    Download the YouTube video or audio at the highest available quality
+    with desired codecs directly, avoiding post-processing with ffmpeg.
     Returns the path to the downloaded file and the video title.
     """
     if format_type == 'mp3':
         ydl_opts = {
-            'format': 'bestaudio/best',
+            'format': 'bestaudio[ext=m4a]/bestaudio/best',
             'outtmpl': os.path.join(output_path, '%(title)s.%(ext)s'),
             'noplaylist': True,
             'quiet': True,
@@ -36,13 +37,21 @@ def download_youtube_video(yt_url, output_path, format_type='mp4'):
             }],
         }
     else:
+        # Enhanced format selection to prioritize higher quality
         ydl_opts = {
-            'format': 'bestvideo+bestaudio/best',
+            'format': (
+                'bestvideo[vcodec=avc1][height<=?1080]+bestaudio[acodec=aac][ext=m4a]'
+                '/bestvideo[vcodec=avc1]+bestaudio[acodec=aac]'
+                '/best[ext=mp4]'
+                '/best'
+            ),
             'outtmpl': os.path.join(output_path, '%(title)s.%(ext)s'),
             'merge_output_format': 'mp4',
             'noplaylist': True,
             'quiet': True,
             'no_warnings': True,
+            # Optional: Set 'prefer_ffmpeg' to False to avoid unnecessary merging if possible
+            'prefer_ffmpeg': False,
         }
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -56,23 +65,29 @@ def download_youtube_video(yt_url, output_path, format_type='mp4'):
                 video_filename = os.path.splitext(video_filename)[0] + '.mp4'
         return video_filename, video_title
 
-def convert_to_heif(input_path, output_path):
+
+
+def convert_to_h264_aac(input_path, output_path):
     """
-    Convert the input video to H.265 encoding using ffmpeg.
-    Returns the path to the converted video.
+    Convert the input video to H.264 (video) and AAC (audio) encoding using ffmpeg.
+    This ensures compatibility with iOS/macOS devices.
     """
-    try:
-        subprocess.check_call([
-            'ffmpeg',
-            '-i', input_path,
-            '-c:v', 'libx265',
-            '-preset', 'fast',
-            '-y',  # Overwrite output files without asking
-            output_path
-        ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        return output_path
-    except subprocess.CalledProcessError:
-        return None
+    # try:
+    #     print("Encoding...")
+    #     subprocess.check_call([
+    #         'ffmpeg',
+    #         '-i', input_path,
+    #         '-c:v', 'libx264',
+    #         '-c:a', 'aac',
+    #         '-strict', 'experimental',  # Allows for AAC encoding
+    #         '-b:a', '128k',  # Audio bitrate
+    #         '-y',  # Overwrite output files without asking
+    #         output_path
+    #     ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    #     print("Encoding success.")
+    #     return output_path
+    # except subprocess.CalledProcessError:
+    #     return None
 
 def flaskMain(request, session):
     """
@@ -146,17 +161,26 @@ def flaskMain(request, session):
                 # Sanitize the video title for filename
                 safe_title = sanitize_filename(video_title)
 
-                if convert_heif:
-                    # Define the output path for the converted video
-                    converted_video_path = os.path.join(tmpdirname, f"{safe_title}_heif.mp4")
-                    conversion_result = convert_to_heif(video_path, converted_video_path)
-                    if not conversion_result or not os.path.exists(conversion_result):
-                        return jsonify({"error": 3, "message": "Failed to convert video to H.265"}), 500
-                    final_video_path = converted_video_path
-                    filename = f"{safe_title}_heif.mp4"
-                else:
-                    final_video_path = video_path
-                    filename = f"{safe_title}.{ext}"
+                
+                final_video_path = video_path
+                filename = f"{safe_title}.{ext}"
+
+                # if convert_heif:
+                #     # Define the output path for the converted video
+                #     converted_video_path = os.path.join(tmpdirname, f"{safe_title}_heif.mp4")
+                #     conversion_result = convert_to_h264_aac(video_path, converted_video_path)
+                #     if not conversion_result or not os.path.exists(conversion_result):
+                #         return jsonify({"error": 3, "message": "Failed to convert video to H.265"}), 500
+                #     final_video_path = converted_video_path
+                #     filename = f"{safe_title}_heif.mp4"
+                # else:
+                #     # Convert to H.264 and AAC for better compatibility with iOS/macOS
+                #     converted_video_path = os.path.join(tmpdirname, f"{safe_title}_h264_aac.mp4")
+                #     conversion_result = convert_to_h264_aac(video_path, converted_video_path)
+                #     if not conversion_result or not os.path.exists(conversion_result):
+                #         return jsonify({"error": 3, "message": "Failed to convert video to H.264/AAC"}), 500
+                #     final_video_path = converted_video_path
+                #     filename = f"{safe_title}.{ext}"
 
                 # Read the final file into bytes
                 with open(final_video_path, 'rb') as f:
