@@ -1,3 +1,5 @@
 flask
 yt-dlp
 wakeonlan
+ffmpeg-python
+pytubefix

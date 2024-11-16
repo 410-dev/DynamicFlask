@@ -122,6 +122,22 @@ def remove(path: str) -> bool:
     except Exception as e:
         print(f"  [WARNING] StorageAPI: Failed to remove {path}: {e}")
         return False
+    
+def cacheDir(tempId: str = "common", createIfNotExist: bool = True) -> str:
+    instanceId: str = getInstanceID()
+    storageLocation: str = getConfig("cacheDir")
+    try:
+        parentDir = f"{storageLocation}/{instanceId}/{tempId}"
+        if not os.path.exists(parentDir) and createIfNotExist:
+            os.makedirs(parentDir, exist_ok=True)
+            print(f"  [INFO] StorageAPI: Created cache directory {parentDir}")
+        elif not os.path.exists(parentDir):
+            print(f"  [WARNING] StorageAPI: Cache directory {parentDir} does not exist")
+        return parentDir
+
+    except Exception as e:
+        print(f"  [WARNING] StorageAPI: Failed to create cache directory: {e}")
+        return ""
 
 def cacheStr(key: str, data: str) -> bool:
     instanceId: str = getInstanceID()
