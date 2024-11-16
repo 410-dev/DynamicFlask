@@ -17,7 +17,7 @@ def flaskMain(request, session):
             cacheID = request.args.get('id') or request.form.get('id')
 
             if not cacheID:
-                return jsonify({"error": 1, "message": "Missing 'id' parameter"}), 400
+                return jsonify({"error": 1, "message": "Missing 'id' parameter", "progress": "0:Error:ID missing"}), 400
             
             # Get the cache location
             cacheLocation = Backend.getTemporaryFileLocation(fixedRandom=cacheID, updateAccessTime=False)
@@ -25,7 +25,7 @@ def flaskMain(request, session):
             downloadfile = f"{cacheLocation}/_download"
 
             if not os.path.exists(progressfile):
-                return jsonify({"error": 2, "message": "Progress file not found"}), 404
+                return jsonify({"error": 2, "message": "Progress file not found", "progress": "0:Error:File not found"}), 404
             
             progresscontent = None
             with open(progressfile, "r") as f:
@@ -41,7 +41,7 @@ def flaskMain(request, session):
             
             return jsonify({"message": "Conversion in progress", "progress": progresscontent}), 200
         
-        return jsonify({"error": 4, "message": "Method not allowed"}), 405
+        return jsonify({"error": 4, "message": "Method not allowed", "progress": "0:Error:Method not allowed"}), 405
     except Exception as e:
-        return jsonify({"error": 5, "message": str(e)}), 500
+        return jsonify({"error": 5, "message": str(e), "progress": f"0:Error:Internal server error - {str(e)}"}), 500
     

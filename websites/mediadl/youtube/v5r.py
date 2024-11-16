@@ -53,7 +53,7 @@ def flaskMain(request, session):
                             f.write("100.00:END")
                     except Exception as e:
                         with open(progressfile, "w") as f:
-                            f.write("0:Error")
+                            f.write(f"0:Error: {str(e)}")
                         raise e
                 return asyncTask(task, cid)
                     
@@ -70,7 +70,7 @@ def flaskMain(request, session):
                                 f.write(downloadPath)
                         except Exception as e:
                             with open(progressfile, "w") as f:
-                                f.write("0:Error")
+                                f.write(f"0:Error: {str(e)}")
                             raise e
                     return asyncTask(task, cid)
                 else:
@@ -85,7 +85,7 @@ def flaskMain(request, session):
                                 f.write("100.00:END")
                         except Exception as e:
                             with open(progressfile, "w") as f:
-                                f.write("0:Error")
+                                f.write(f"0:Error: {str(e)}")
                             raise e
                     
                     return asyncTask(task, cid)
@@ -103,7 +103,7 @@ def flaskMain(request, session):
                                 f.write(downloadPath)
                         except Exception as e:
                             with open(progressfile, "w") as f:
-                                f.write("0:Error")
+                                f.write(f"0:Error: {str(e)}")
                             raise e
                     return asyncTask(task, cid)
                 else:
@@ -118,12 +118,12 @@ def flaskMain(request, session):
                                 f.write("100.00:END")
                         except Exception as e:
                             with open(progressfile, "w") as f:
-                                f.write("0:Error")
+                                f.write(f"0:Error: {str(e)}")
                             raise e
                     return asyncTask(task, cid)
 
         else:
-            return jsonify({"error": 4, "message": "Invalid request method"}), 405
+            return jsonify({"error": 4, "message": "Invalid request method", "progress": "error"}), 405
 
     except Exception as e:
-        return jsonify({"error": 6, "message": f"An unexpected error occurred: {str(e)}"}), 500
+        return jsonify({"error": 6, "message": f"An unexpected error occurred: {str(e)}", "progress": f"error:{str(e)}"}), 500
