@@ -12,6 +12,9 @@ import storageapi
 from urllib.parse import quote
 from pytubefix import YouTube
 
+allowHwAccel_CUDA = False
+allowHwAccel_AppleSilicon = False
+
 def sanitize_filename(name):
     """
     Sanitize the video title to create a safe filename.
@@ -92,8 +95,8 @@ def convertToQuickTimeCompatible(
     filePath: str,
     output: str = None,
     codec: str = "h264",
-    appleSilicon: bool = False,
-    cuda: bool = False,
+    appleSilicon: bool = allowHwAccel_AppleSilicon,
+    cuda: bool = allowHwAccel_CUDA,
     progressPercentFile: str = None,
 ) -> str:
 
