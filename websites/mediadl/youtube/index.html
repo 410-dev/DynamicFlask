@@ -47,6 +47,7 @@
             color: white;
             cursor: pointer;
             border-radius: 4px;
+            font-size: 16px;
         }
         button:hover {
             background-color: #218838;
@@ -76,6 +77,22 @@
             color: red;
             margin-top: 10px;
             font-weight: bold;
+        }
+        /* Download Button Styles */
+        #download-button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-top: 20px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        #download-button:hover {
+            background-color: #0069d9;
         }
     </style>
 </head>
@@ -113,6 +130,7 @@
     </div>
     <div id="status-message">Starting...</div>
     <div id="error-message" class="hidden"></div>
+    <a href="#" id="download-button" class="hidden" download>Download File</a>
 </div>
 
 <script>
@@ -132,6 +150,7 @@
         const progressView = document.getElementById('progress-view');
         const submitButton = document.getElementById('submit-button');
         const errorMessage = document.getElementById('error-message');
+        const downloadButton = document.getElementById('download-button');
 
         // Parse URL parameters and set form fields
         const params = getQueryParams();
@@ -178,23 +197,41 @@
                     return response.json().then(data => ({ data, response }));
                 } else {
                     // If not JSON, assume it's a file to download
-                    // Redirect the browser to the API URL to initiate download
-                    window.location.href = apiUrl.toString();
-                    // Throw an error to prevent further processing
-                    throw new Error('Non-JSON response received. Redirecting for download.');
+                    // Instead of redirecting, provide a download link
+                    const blob = response.blob();
+                    return blob.then(b => {
+                        const downloadURL = window.URL.createObjectURL(b);
+                        return { downloadURL, response };
+                    });
                 }
             })
-            .then(({ data, response }) => {
-                if (data.message === 'Conversion started' && data.progress) {
-                    // Transition to progress view
+            .then(({ data, downloadURL }) => {
+                if (data) {
+                    if (data.message === 'Conversion started' && data.progress) {
+                        // Transition to progress view
+                        formView.classList.add('hidden');
+                        progressView.classList.remove('hidden');
+                        errorMessage.classList.add('hidden');
+
+                        // Start polling the progress URL
+                        startProgressPolling(data.progress);
+                    } else {
+                        throw new Error('Unexpected API response.');
+                    }
+                } else if (downloadURL) {
+                    // Provide the download URL to the user
                     formView.classList.add('hidden');
                     progressView.classList.remove('hidden');
                     errorMessage.classList.add('hidden');
 
-                    // Start polling the progress URL
-                    startProgressPolling(data.progress);
-                } else {
-                    throw new Error('Unexpected API response.');
+                    // Show the download button
+                    downloadButton.href = downloadURL;
+                    downloadButton.classList.remove('hidden');
+                    downloadButton.textContent = 'Download File';
+
+                    // Update status messages
+                    document.getElementById('status-title').textContent = 'Download Ready';
+                    document.getElementById('status-message').textContent = 'Your file is ready to download.';
                 }
             })
             .catch(error => {
@@ -214,6 +251,7 @@
             const statusMessage = document.getElementById('status-message');
             const errorMsg = document.getElementById('error-message');
             let pollingInterval;
+            let downloadURL = ''; // To store the final download URL
 
             // Construct the full progress URL
             const baseUrl = window.location.origin;
@@ -228,16 +266,32 @@
                     if (contentType && contentType.includes("application/json")) {
                         return response.json();
                     } else {
-                        window.location.href = progressUrl;
-                        // Set percentage to 100 to stop polling
-                        return { progress: '100:Redirecting' };
-                        // throw new Error('Non-JSON response received. Redirecting for download.');
+                        // If response is not JSON, assume it's the final file or a download URL
+                        // Attempt to create a download link
+                        return response.blob().then(blob => {
+                            downloadURL = window.URL.createObjectURL(blob);
+                            return { progress: '100:Complete', downloadURL };
+                        });
+                        // Alternatively, if the server provides a download URL in headers or response, handle accordingly
                     }
                 })
                 .then(data => {
                     // Check for errors in message
                     if (data.message && data.message.toLowerCase().includes('error')) {
                         throw new Error(data.message);
+                    }
+
+                    // If downloadURL is present, conversion is complete
+                    if (data.downloadURL) {
+                        clearInterval(pollingInterval);
+                        statusTitle.textContent = 'Download Ready';
+                        progressFill.style.width = '100%';
+                        statusMessage.textContent = 'Your file is ready to download.';
+                        // Show the download button
+                        downloadButton.href = data.downloadURL;
+                        downloadButton.classList.remove('hidden');
+                        downloadButton.textContent = 'Download File';
+                        return;
                     }
 
                     // Parse the progress field
@@ -271,7 +325,12 @@
                         // If conversion is complete (assuming 100%)
                         if (percentage >= 100) {
                             clearInterval(pollingInterval);
-                            statusMessage.textContent = 'Conversion completed successfully!';
+                            statusTitle.textContent = 'Conversion Completed';
+                            statusMessage.textContent = 'Your file is ready to download.';
+                            // Show the download button
+                            downloadButton.href = progressUrl; // Assuming the progressUrl now serves the file
+                            downloadButton.classList.remove('hidden');
+                            downloadButton.textContent = 'Download File';
                         }
                     } else {
                         throw new Error('Progress information missing.');
