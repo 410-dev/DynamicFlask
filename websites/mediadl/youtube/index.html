@@ -264,6 +264,8 @@
                 .then(response => {
                     const contentType = response.headers.get("Content-Type");
                     if (contentType && contentType.includes("application/json")) {
+                        // hide the download button
+                        downloadButton.classList.add('hidden');
                         return response.json();
                     } else {
                         // If response is not JSON, assume it's the final file or a download URL
@@ -334,6 +336,10 @@
 
                             // Update window.location to the download URL
                             window.location.href = downloadURL;
+                        } else {
+                            // If not complete, keep polling
+                            // Hide the download button if it was shown
+                            downloadButton.classList.add('hidden');
                         }
                     } else {
                         throw new Error('Progress information missing.');
