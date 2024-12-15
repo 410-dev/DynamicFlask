@@ -220,18 +220,18 @@
                     }
                 } else if (downloadURL) {
                     // Provide the download URL to the user
-                    formView.classList.add('hidden');
-                    progressView.classList.remove('hidden');
-                    errorMessage.classList.add('hidden');
-
-                    // Show the download button
-                    downloadButton.href = downloadURL;
-                    downloadButton.classList.remove('hidden');
-                    downloadButton.textContent = 'Download File';
-
-                    // Update status messages
-                    document.getElementById('status-title').textContent = 'Download Ready';
-                    document.getElementById('status-message').textContent = 'Your file is ready to download.';
+                    // formView.classList.add('hidden');
+                    // progressView.classList.remove('hidden');
+                    // errorMessage.classList.add('hidden');
+                    //
+                    // // Show the download button
+                    // downloadButton.href = downloadURL;
+                    // downloadButton.classList.remove('hidden');
+                    // downloadButton.textContent = 'Download File';
+                    //
+                    // // Update status messages
+                    // document.getElementById('status-title').textContent = 'Download Ready';
+                    // document.getElementById('status-message').textContent = 'Your file is ready to download.';
                 }
             })
             .catch(error => {
@@ -282,17 +282,17 @@
                     }
 
                     // If downloadURL is present, conversion is complete
-                    if (data.downloadURL) {
-                        clearInterval(pollingInterval);
-                        statusTitle.textContent = 'Download Ready';
-                        progressFill.style.width = '100%';
-                        statusMessage.textContent = 'Your file is ready to download.';
-                        // Show the download button
-                        downloadButton.href = data.downloadURL;
-                        downloadButton.classList.remove('hidden');
-                        downloadButton.textContent = 'Download File';
-                        return;
-                    }
+                    // if (data.downloadURL) {
+                    //     clearInterval(pollingInterval);
+                    //     statusTitle.textContent = 'Download Ready';
+                    //     progressFill.style.width = '100%';
+                    //     statusMessage.textContent = 'Your file is ready to download.';
+                    //     // Show the download button
+                    //     downloadButton.href = data.downloadURL;
+                    //     downloadButton.classList.remove('hidden');
+                    //     downloadButton.textContent = 'Download File';
+                    //     return;
+                    // }
 
                     // Parse the progress field
                     if (data.progress) {
@@ -331,6 +331,9 @@
                             downloadButton.href = progressUrl; // Assuming the progressUrl now serves the file
                             downloadButton.classList.remove('hidden');
                             downloadButton.textContent = 'Download File';
+
+                            // Update window.location to the download URL
+                            window.location.href = downloadURL;
                         }
                     } else {
                         throw new Error('Progress information missing.');
