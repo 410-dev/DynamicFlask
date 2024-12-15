@@ -3,3 +3,4 @@ yt-dlp
 wakeonlan
 ffmpeg-python
 pytubefix
+pytube

@@ -2,141 +2,277 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple YouTube Downloader</title>
+    <title>LKS410's YouTube Downloader 5.1</title>
     <style>
-        /* Reset some default styles */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Set the background color and font for the body */
         body {
-            background-color: #000000; /* Black background */
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Sans-serif font */
-            height: 100vh;
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .hidden {
+            display: none;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .checkbox-group {
             display: flex;
-            justify-content: center;
             align-items: center;
         }
-
-        /* Container for the downloader */
-        .downloader-container {
-            background-color: #87CEFA; /* Light Sky Blue */
-            padding: 40px;
-            border-radius: 15px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-            width: 90%;
-            max-width: 400px;
+        .checkbox-group input {
+            margin-right: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        /* Progress View Styles */
+        #progress-view {
             text-align: center;
         }
-
-        /* Title styling */
-        .downloader-container h1 {
-            font-size: 24px;
+        #progress-bar {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 25px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        #progress-fill {
+            height: 20px;
+            width: 0%;
+            background-color: #28a745;
+            transition: width 0.5s ease-in-out;
+        }
+        #status-message {
+            margin-top: 10px;
             font-weight: bold;
-            margin-bottom: 20px;
-            color: #000000; /* Black text */
         }
-
-        /* Input field styling */
-        .downloader-container input[type="url"] {
-            width: 100%;
-            padding: 12px 20px;
-            margin-bottom: 15px;
-            border: 2px solid #ccc;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-
-        /* Select menu styling */
-        .downloader-container select {
-            width: 100%;
-            padding: 12px 20px;
-            margin-bottom: 20px;
-            border: 2px solid #ccc;
-            border-radius: 8px;
-            font-size: 16px;
-            background-color: #ffffff; /* White background for select */
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><polygon points="0,0 10,0 5,5" fill="%23000"/></svg>');
-            background-repeat: no-repeat;
-            background-position: right 10px center;
-            background-size: 10px;
-            cursor: pointer;
-        }
-
-        /* Download button styling */
-        .downloader-container button {
-            width: 100%;
-            padding: 12px 20px;
-            background-color: #333333; /* Dark gray background */
-            color: #ffffff; /* White text */
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .downloader-container button:hover {
-            background-color: #555555; /* Lighter gray on hover */
-        }
-
-        /* Disclaimer message styling */
-        .downloader-container .disclaimer {
-            margin-top: 20px;
-            font-size: 14px;
-            color: #ffffff; /* White text */
-            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
-            padding: 10px;
-            border-radius: 8px;
-            text-align: left;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 480px) {
-            .downloader-container {
-                padding: 30px 20px;
-            }
-
-            .downloader-container h1 {
-                font-size: 20px;
-            }
-
-            .downloader-container input[type="url"],
-            .downloader-container select,
-            .downloader-container button {
-                font-size: 16px;
-                padding: 10px 15px;
-            }
-
-            .downloader-container .disclaimer {
-                font-size: 12px;
-                padding: 8px;
-            }
+        #error-message {
+            color: red;
+            margin-top: 10px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <div class="downloader-container">
-        <h1>Simple YouTube Downloader</h1>
-        <form action="/mediadl/youtube/v4" method="get">
-            <input type="url" name="yturl" placeholder="Enter YouTube URL" required>
-            <select name="type">
-                <option value="mp4-hq">MP4 (HQ Video)</option>
-                <option value="mp4">MP4 (Video)</option>
-                <option value="mp3">MP3 (Audio)</option>
-            </select>
-            <button type="submit">Download</button>
-        </form>
-        <div class="disclaimer">
-            <p><strong>Disclaimer:</strong> Ensure you have the rights to download and use the content. Please wait until the server finishes downloading and encoding before attempting to download the file. During the task, the page may seem unresponsive.</p>
-        </div>
+
+<div class="container" id="form-view">
+    <h2>YouTube Conversion Tool</h2>
+    <div class="form-group">
+        <label for="youtube-url">YouTube URL:</label>
+        <input type="text" id="youtube-url" placeholder="Enter YouTube URL" required>
     </div>
+    <div class="form-group checkbox-group">
+        <input type="checkbox" id="remux" checked>
+        <label for="remux">Remux</label>
+    </div>
+    <div class="form-group checkbox-group">
+        <input type="checkbox" id="qtcomp" checked>
+        <label for="qtcomp">QT Compatible</label>
+    </div>
+    <div class="form-group">
+        <label for="file-type">File Type:</label>
+        <select id="file-type">
+            <option value="audiovideo">MP4</option>
+            <option value="video">MP4 without sound</option>
+            <option value="audio">M4A</option>
+        </select>
+    </div>
+    <button id="submit-button">Convert</button>
+</div>
+
+<div class="container hidden" id="progress-view">
+    <h2 id="status-title">Download Progress</h2>
+    <div id="progress-bar">
+        <div id="progress-fill"></div>
+    </div>
+    <div id="status-message">Starting...</div>
+    <div id="error-message" class="hidden"></div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const formView = document.getElementById('form-view');
+        const progressView = document.getElementById('progress-view');
+        const submitButton = document.getElementById('submit-button');
+        const errorMessage = document.getElementById('error-message');
+
+        submitButton.addEventListener('click', () => {
+            // Collect input values
+            const youtubeURL = document.getElementById('youtube-url').value.trim();
+            const remux = document.getElementById('remux').checked;
+            const qtcomp = document.getElementById('qtcomp').checked;
+            const fileType = document.getElementById('file-type').value;
+
+            // Basic validation
+            if (!youtubeURL) {
+                alert('Please enter a YouTube URL.');
+                return;
+            }
+
+            // Disable the button to prevent multiple submissions
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+
+            // Construct the API URL with query parameters
+            const apiUrl = new URL(window.location.origin + '/mediadl/youtube/v5r'); // Adjust the API endpoint as needed
+            apiUrl.searchParams.append('url', youtubeURL);
+            apiUrl.searchParams.append('remux', remux);
+            apiUrl.searchParams.append('qt', qtcomp);
+            apiUrl.searchParams.append('type', fileType);
+
+            // Send GET request to the API
+            fetch(apiUrl, {
+                method: 'GET'
+            })
+            .then(response => {
+                const contentType = response.headers.get("Content-Type");
+
+                if (contentType && contentType.includes("application/json")) {
+                    // If response is JSON, parse it
+                    return response.json().then(data => ({ data, response }));
+                } else {
+                    // If not JSON, assume it's a file to download
+                    // Redirect the browser to the API URL to initiate download
+                    window.location.href = apiUrl.toString();
+                    // Throw an error to prevent further processing
+                    throw new Error('Non-JSON response received. Redirecting for download.');
+                }
+            })
+            .then(({ data, response }) => {
+                if (data.message === 'Conversion started' && data.progress) {
+                    // Transition to progress view
+                    formView.classList.add('hidden');
+                    progressView.classList.remove('hidden');
+                    errorMessage.classList.add('hidden');
+
+                    // Start polling the progress URL
+                    startProgressPolling(data.progress);
+                } else {
+                    throw new Error('Unexpected API response.');
+                }
+            })
+            .catch(error => {
+                if (error.message !== 'Non-JSON response received. Redirecting for download.') {
+                    // Only alert if it's not the redirect error
+                    alert('Error: ' + error.message);
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Convert';
+                }
+                // If it's the redirect error, do nothing as the browser is navigating away
+            });
+        });
+
+        function startProgressPolling(progressPath) {
+            const statusTitle = document.getElementById('status-title');
+            const progressFill = document.getElementById('progress-fill');
+            const statusMessage = document.getElementById('status-message');
+            const errorMsg = document.getElementById('error-message');
+            let pollingInterval;
+
+            // Construct the full progress URL
+            const baseUrl = window.location.origin;
+            const progressUrl = baseUrl + progressPath;
+
+            pollingInterval = setInterval(() => {
+                fetch(progressUrl, {
+                    method: 'GET'
+                })
+                .then(response => {
+                    const contentType = response.headers.get("Content-Type");
+                    if (contentType && contentType.includes("application/json")) {
+                        return response.json();
+                    } else {
+                        window.location.href = progressUrl;
+                        // Set percentage to 100 to stop polling
+                        return { progress: '100:Redirecting' };
+                        // throw new Error('Non-JSON response received. Redirecting for download.');
+                    }
+                })
+                .then(data => {
+                    // Check for errors in message
+                    if (data.message && data.message.toLowerCase().includes('error')) {
+                        throw new Error(data.message);
+                    }
+
+                    // Parse the progress field
+                    if (data.progress) {
+                        const [percentageStr, action] = data.progress.split(':', 2);
+                        let percentage = parseFloat(percentageStr);
+
+                        if (isNaN(percentage)) {
+                            throw new Error('Invalid progress format.');
+                        }
+
+                        // Round percent to 2 decimal places
+                        percentage = Math.round(percentage * 100) / 100;
+
+                        // Set action string to "Converting" if "CONTINUE"
+                        let actionStr = action.trim();
+                        if (action.trim().toLowerCase() === 'continue') {
+                            actionStr = 'Converting';
+                        }
+
+                        // Update progress bar and status message, and title
+                        statusTitle.textContent = data.message;
+                        progressFill.style.width = percentage + '%';
+                        statusMessage.textContent = `${actionStr} (${percentage}%)`;
+
+                        // Check for error in action
+                        if (action.toLowerCase().includes('error')) {
+                            throw new Error('An error occurred during conversion.');
+                        }
+
+                        // If conversion is complete (assuming 100%)
+                        if (percentage >= 100) {
+                            clearInterval(pollingInterval);
+                            statusMessage.textContent = 'Conversion completed successfully!';
+                        }
+                    } else {
+                        throw new Error('Progress information missing.');
+                    }
+                })
+                .catch(error => {
+                    clearInterval(pollingInterval);
+                    // Check if it's the redirect error
+                    if (!error.message.includes('Redirecting')) {
+                        errorMsg.textContent = 'Error: ' + error.message;
+                        errorMsg.classList.remove('hidden');
+                        statusMessage.textContent = 'Conversion failed.';
+                    } else {
+                        errorMsg.textContent = 'Redirecting for download...';
+                        errorMsg.classList.remove('hidden');
+                    }
+                });
+            }, 500); // Poll every 500 milliseconds
+        }
+    });
+</script>
+
 </body>
 </html>

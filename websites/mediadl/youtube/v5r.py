@@ -61,6 +61,7 @@ def flaskMain(request, session):
             elif video_audio == "video":
                 if qt:
                     def task():
+                        print("QT conversion enabled")
                         try:
                             with open(progressfile, "w") as f:
                                 f.write("0:Downloading")
@@ -75,6 +76,7 @@ def flaskMain(request, session):
                     return asyncTask(task, cid)
                 else:
                     def task():
+                        print("QT conversion disabled")
                         try:
                             with open(progressfile, "w") as f:
                                 f.write("0:Downloading")
@@ -94,6 +96,7 @@ def flaskMain(request, session):
                 if qt:
                     # Threading for async conversion
                     def task():
+                        print("QT conversion enabled")
                         try:
                             with open(progressfile, "w") as f:
                                 f.write("0:Downloading")
@@ -108,6 +111,7 @@ def flaskMain(request, session):
                     return asyncTask(task, cid)
                 else:
                     def task():
+                        print("QT conversion disabled")
                         try:
                             with open(progressfile, "w") as f:
                                 f.write("0:Downloading")

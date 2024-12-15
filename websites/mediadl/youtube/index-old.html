@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple YouTube Downloader</title>
+    <style>
+        /* Reset some default styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Set the background color and font for the body */
+        body {
+            background-color: #000000; /* Black background */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Sans-serif font */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Container for the downloader */
+        .downloader-container {
+            background-color: #87CEFA; /* Light Sky Blue */
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        /* Title styling */
+        .downloader-container h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #000000; /* Black text */
+        }
+
+        /* Input field styling */
+        .downloader-container input[type="url"] {
+            width: 100%;
+            padding: 12px 20px;
+            margin-bottom: 15px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        /* Select menu styling */
+        .downloader-container select {
+            width: 100%;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            background-color: #ffffff; /* White background for select */
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><polygon points="0,0 10,0 5,5" fill="%23000"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 10px;
+            cursor: pointer;
+        }
+
+        /* Download button styling */
+        .downloader-container button {
+            width: 100%;
+            padding: 12px 20px;
+            background-color: #333333; /* Dark gray background */
+            color: #ffffff; /* White text */
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .downloader-container button:hover {
+            background-color: #555555; /* Lighter gray on hover */
+        }
+
+        /* Disclaimer message styling */
+        .downloader-container .disclaimer {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #ffffff; /* White text */
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+            padding: 10px;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .downloader-container {
+                padding: 30px 20px;
+            }
+
+            .downloader-container h1 {
+                font-size: 20px;
+            }
+
+            .downloader-container input[type="url"],
+            .downloader-container select,
+            .downloader-container button {
+                font-size: 16px;
+                padding: 10px 15px;
+            }
+
+            .downloader-container .disclaimer {
+                font-size: 12px;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="downloader-container">
+        <h1>Simple YouTube Downloader</h1>
+        <form action="/mediadl/youtube/v4" method="get">
+            <input type="url" name="yturl" placeholder="Enter YouTube URL" required>
+            <select name="type">
+                <option value="mp4-hq">MP4 (HQ Video)</option>
+                <option value="mp4">MP4 (Video)</option>
+                <option value="mp3">MP3 (Audio)</option>
+            </select>
+            <button type="submit">Download</button>
+        </form>
+        <div class="disclaimer">
+            <p><strong>Disclaimer:</strong> Ensure you have the rights to download and use the content. Please wait until the server finishes downloading and encoding before attempting to download the file. During the task, the page may seem unresponsive.</p>
+        </div>
+    </div>
+</body>
+</html>
