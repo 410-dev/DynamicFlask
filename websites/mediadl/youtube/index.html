@@ -116,11 +116,31 @@
 </div>
 
 <script>
+    // Function to parse URL parameters
+    function getQueryParams() {
+        const params = new URLSearchParams(window.location.search);
+        return {
+            url: params.get('url') || '',
+            remux: params.get('remux') === 'true',
+            qtcomp: params.get('qt') === 'true',
+            ftype: params.get('ftype') || 'audiovideo' // default to 'audiovideo' if not provided
+        };
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         const formView = document.getElementById('form-view');
         const progressView = document.getElementById('progress-view');
         const submitButton = document.getElementById('submit-button');
         const errorMessage = document.getElementById('error-message');
+
+        // Parse URL parameters and set form fields
+        const params = getQueryParams();
+        if (params.url) {
+            document.getElementById('youtube-url').value = params.url;
+        }
+        document.getElementById('remux').checked = params.remux;
+        document.getElementById('qtcomp').checked = params.qtcomp;
+        document.getElementById('file-type').value = params.ftype;
 
         submitButton.addEventListener('click', () => {
             // Collect input values
