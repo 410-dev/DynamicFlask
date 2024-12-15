@@ -152,6 +152,9 @@
         const errorMessage = document.getElementById('error-message');
         const downloadButton = document.getElementById('download-button');
 
+        // Hide the download button initially
+        downloadButton.classList.add('hidden');
+
         // Parse URL parameters and set form fields
         const params = getQueryParams();
         if (params.url) {
@@ -284,17 +287,20 @@
                     }
 
                     // If downloadURL is present, conversion is complete
-                    // if (data.downloadURL) {
-                    //     clearInterval(pollingInterval);
-                    //     statusTitle.textContent = 'Download Ready';
-                    //     progressFill.style.width = '100%';
-                    //     statusMessage.textContent = 'Your file is ready to download.';
-                    //     // Show the download button
-                    //     downloadButton.href = data.downloadURL;
-                    //     downloadButton.classList.remove('hidden');
-                    //     downloadButton.textContent = 'Download File';
-                    //     return;
-                    // }
+                    if (data.downloadURL) {
+                        clearInterval(pollingInterval);
+                        statusTitle.textContent = 'Download Ready';
+                        progressFill.style.width = '100%';
+                        statusMessage.textContent = 'Your file is ready to download.';
+                        // Show the download button
+                        downloadButton.href = data.downloadURL;
+                        downloadButton.classList.remove('hidden');
+                        downloadButton.textContent = 'Download File';
+                        return;
+                    } else {
+                        // Hide the download button if it was shown
+                        downloadButton.classList.add('hidden');
+                    }
 
                     // Parse the progress field
                     if (data.progress) {
