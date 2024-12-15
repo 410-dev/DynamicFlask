@@ -279,7 +279,9 @@
                         // Set action string to "Converting" if "CONTINUE"
                         let actionStr = action.trim();
                         if (action.trim().toLowerCase() === 'continue') {
-                            actionStr = 'Converting';
+                            actionStr = 'Encoding to QT Compatible';
+                        } else if (action.trim().toLowerCase() === 'Downloading') {
+                            actionStr = 'Downloading (This may take a while at 0%)';
                         }
 
                         // Update progress bar and status message, and title
